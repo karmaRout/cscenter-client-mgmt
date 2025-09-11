@@ -1,47 +1,25 @@
 services:
-
-  # Backend (Web Service)
-
+  # Backend (API)
   - type: web
-
     name: my-backend
-
     env: node
-
-    rootDir: backend   # 👈 tell Render to use /backend
-
+    rootDir: backend
     buildCommand: npm install && npm run build
-
     startCommand: npm start
-
     plan: free
-
     envVars:
-
       - key: NODE_ENV
-
         value: production
  
-  # Frontend (React/Angular Static Site)
-
-  - type: static
-
+  # Frontend (Static React/Angular)
+  - type: web
     name: my-frontend
-
-    rootDir: frontend  # 👈 tell Render to use /frontend
-
+    env: static  # 👈 tells Render this is static, not Node
+    rootDir: frontend
     buildCommand: npm install && npm run build
-
     staticPublishPath: build   # React
-
     # staticPublishPath: dist  # Angular
-
     plan: free
-
     envVars:
-
       - key: REACT_APP_API_URL
-
         value: https://my-backend.onrender.com
-
- 
