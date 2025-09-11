@@ -20,7 +20,7 @@ function App() {
   const [password, setPassword] = useState("");
 
   // 🔑 API base URL (replace with your backend Render URL)
-  const API_URL = "https://your-backend-service.onrender.com";
+  const API_URL = "https://cscenter-client-mgmt-6.onrender.com";
 
   // Fetch clients from backend
   useEffect(() => {
