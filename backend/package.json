@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && rm -rf ../backend/frontend-build && cp -r dist ../backend/frontend-build && cd ../backend && npm install",
-    "dev": "nodemon index.js",
-    "prisma": "prisma"
+    "build": "cd frontend && npm install && npm run build && cp -r dist ../backend/frontend-build",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
