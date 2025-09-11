@@ -19,12 +19,15 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // 🔑 API base URL (replace with your backend Render URL)
+  const API_URL = "https://your-backend-service.onrender.com";
+
   // Fetch clients from backend
   useEffect(() => {
-    fetch("/clients")
+    fetch(`${API_URL}/clients`)
       .then((res) => res.json())
       .then(setClients)
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Fetch clients error:", err));
   }, []);
 
   // Handle input change in client form
@@ -36,7 +39,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/clients", {
+      const res = await fetch(`${API_URL}/clients`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clientData),
@@ -45,19 +48,19 @@ function App() {
       setClients([newClient, ...clients]);
       setClientData({ name: "", serial: "", model: "", date: "", phone: "" });
     } catch (err) {
-      console.error(err);
+      console.error("Add client error:", err);
     }
   };
 
   // Delete client
   const handleDelete = async (id) => {
     try {
-      await fetch(`/clients/${id}`, {
+      await fetch(`${API_URL}/clients/${id}`, {
         method: "DELETE",
       });
       setClients(clients.filter((c) => c.id !== id));
     } catch (err) {
-      console.error(err);
+      console.error("Delete client error:", err);
     }
   };
 
