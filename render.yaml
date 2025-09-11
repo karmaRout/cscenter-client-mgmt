@@ -1,0 +1,26 @@
+services:
+  # --- Backend Service (API) ---
+  - type: web
+    name: my-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Add your DB credentials, API keys, etc.
+      # - key: DATABASE_URL
+      #   value: postgres://...
+ 
+  # --- Frontend Service (React/Angular) ---
+  - type: static
+    name: my-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build   # React
+    # staticPublishPath: dist  # Angular
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://my-backend.onrender.com
