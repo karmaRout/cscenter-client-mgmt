@@ -30,7 +30,7 @@ function ClientList({ clients, handleDelete }) {
                   <td className="border p-2">{c.phone}</td>
                   <td className="border p-2 text-center">
                     <button
-                      onClick={() => handleDelete(idx)}
+                      onClick={() => handleDelete(c.id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       <Trash2 size={18} />
