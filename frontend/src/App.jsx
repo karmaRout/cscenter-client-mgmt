@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoginModal from "./components/LoginModal";
 import ClientForm from "./components/ClientForm";
-import ClientList from "./components/ClientList";
+import ClientList from "./components/clientList/ClientList";
 
 function App() {
   const [clients, setClients] = useState([]);
@@ -20,7 +20,7 @@ function App() {
   const [password, setPassword] = useState("");
 
   // 🔑 API base URL (replace with your backend Render URL)
-  const API_URL = window._env_?.API_URL || "http://localhost:4000";
+  const API_URL = "http://localhost:4000";
 
   // Fetch clients from backend
   useEffect(() => {

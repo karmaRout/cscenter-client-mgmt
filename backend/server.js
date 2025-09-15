@@ -1,65 +1,75 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import fs from "fs";
+import mongoose from "mongoose";
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const FILE_PATH = "./client.json";
-
-// Helper: load clients from file
-function loadClients() {
+// ✅ Connect to MongoDB
+async function connectDB() {
   try {
-    if (fs.existsSync(FILE_PATH)) {
-      const data = fs.readFileSync(FILE_PATH, "utf8");
-      console.log("Loaded clients:", JSON.parse(data));
-      return JSON.parse(data);
-    }
-    return [];
+    await mongoose.connect(
+      "mongodb+srv://karmarout_db_user:JJaRwdr7L4FQneA7@csmngmnt.lf4wjoq.mongodb.net/csmngmnt?retryWrites=true&w=majority&appName=csmngmnt"
+    );
+    console.log("✅ MongoDB connected!");
   } catch (err) {
-    console.error("Error reading clients file:", err);
-    return [];
+    console.error("❌ DB connection error:", err);
   }
 }
+connectDB();
 
-// Helper: save clients to file
-function saveClients(clients) {
-  try {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(clients, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error saving clients file:", err);
-  }
-}
+// ✅ Define Client schema & model
+const clientSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  serial: { type: String, required: true },
+  model: { type: String, required: true },
+  date: { type: String, required: true }, // can be Date if you want
+  phone: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
 
-// Load clients at startup
-let clients = loadClients();
+const Client = mongoose.model("Client", clientSchema);
 
+// ✅ Routes
+
+// Root
 app.get("/", (req, res) => {
-  res.json(clients);
-});
-// GET /clients
-app.get("/clients", (req, res) => {
-  res.json(clients);
+  res.send("🚀 Client Management API running...");
 });
 
-// POST /clients
-app.post("/clients", (req, res) => {
-  const newClient = { id: Date.now(), ...req.body };
-  clients.push(newClient);
-  saveClients(clients);
-  res.status(201).json(newClient);
+// GET all clients
+app.get("/clients", async (req, res) => {
+  try {
+    const clients = await Client.find();
+    res.json(clients);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch clients" });
+  }
 });
 
-// DELETE /clients/:id
-app.delete("/clients/:id", (req, res) => {
-  const id = Number(req.params.id);
-  clients = clients.filter((c) => c.id !== id);
-  saveClients(clients);
-  res.status(204).end();
+// POST new client
+app.post("/clients", async (req, res) => {
+  try {
+    const newClient = new Client(req.body);
+    const savedClient = await newClient.save();
+    res.status(201).json(savedClient);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to add client" });
+  }
+});
+
+// DELETE client by ID
+app.delete("/clients/:id", async (req, res) => {
+  try {
+    await Client.findByIdAndDelete(req.params.id);
+    res.status(204).end();
+  } catch (err) {
+    res.status(400).json({ error: "Failed to delete client" });
+  }
 });
 
 // Start server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log("🚀 Server running at http://localhost:4000"));
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
